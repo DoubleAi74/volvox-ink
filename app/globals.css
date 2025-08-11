@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #e0e0e0;
+}
+
+/* Neumorphic Shadow Styles */
+.shadow-neumorphic {
+  box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+}
+.shadow-neumorphic-inset {
+  box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
+}
+.shadow-neumorphic-pressed {
+  box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
+}
+.shadow-neumorphic-soft {
+  box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
+}
+
+/* Neumorphic Text Styles */
+.text-neumorphic {
+  color: #8a8a8a;
+  text-shadow: 1px 1px 2px #ffffff, -1px -1px 2px #bebebe;
+}
+
+/* Neumorphic Button Base Styles */
+.btn-neumorphic {
+  background: #e0e0e0;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* We will use Tailwind's hover: and active: variants instead of these */
+/* .btn-neumorphic:hover { ... } */
+/* .btn-neumorphic:active { ... } */
+
+/* React Quill Rich Text Editor Styles */
+.ql-snow {
+  border: none;
+  background: #e0e0e0;
+  color: #8a8a8a;
+}
+.ql-toolbar {
+  border: none !important;
+  border-bottom: 1px solid #bebebe !important;
+  background: #e0e0e0;
+}
+.ql-container {
+  border: none !important;
+  font-size: 14px;
+  min-height: 120px;
+}
+.ql-editor {
+  color: #8a8a8a;
+  padding: 16px;
+}
+.ql-editor.ql-blank::before {
+  color: #8a8a8a;
+  font-style: normal;
+  opacity: 0.7;
+}
+.ql-toolbar .ql-stroke {
+  stroke: #8a8a8a;
+}
+.ql-toolbar .ql-fill {
+  fill: #8a8a8a;
+}
+.ql-toolbar button:hover .ql-stroke,
+.ql-toolbar button:focus .ql-stroke,
+.ql-toolbar button.ql-active .ql-stroke {
+  stroke: #333; /* Darker color on hover/active */
+}
