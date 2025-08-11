@@ -7,6 +7,8 @@ import ImageWithLoader from "@/components/ImageWithLoader";
 
 import { uploadFile } from "@/lib/data";
 
+import { useAuth } from "@/context/AuthContext";
+
 // 2. Use dynamic import to load the editor only on the client-side
 const RichTextEditor = dynamic(() => import("./RichTextEditor"), {
   ssr: false,
@@ -16,6 +18,8 @@ const RichTextEditor = dynamic(() => import("./RichTextEditor"), {
 });
 
 export default function EditPostModal({ isOpen, post, onClose, onSubmit }) {
+  const { user } = useAuth();
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -53,13 +57,32 @@ export default function EditPostModal({ isOpen, post, onClose, onSubmit }) {
     onSubmit(dataToSend);
   };
 
+  // const handleThumbnailUpload = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+
+  //   setThumbUploading(true);
+  //   try {
+  //     const file_url = await uploadFile(file, "post-thumbnails");
+  //     setFormData((prev) => ({ ...prev, thumbnail: file_url }));
+  //   } catch (error) {
+  //     console.error("Thumbnail upload failed:", error);
+  //   }
+  //   setThumbUploading(false);
+  // };
+
   const handleThumbnailUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    const userId = user?.uid;
+    if (!userId) return alert("You must be logged in.");
+
     setThumbUploading(true);
     try {
-      const file_url = await uploadFile(file, "post-thumbnails");
+      // CHANGE 1
+      const securePath = `users/${userId}/post-thumbnails`;
+      const file_url = await uploadFile(file, securePath);
       setFormData((prev) => ({ ...prev, thumbnail: file_url }));
     } catch (error) {
       console.error("Thumbnail upload failed:", error);
@@ -67,13 +90,32 @@ export default function EditPostModal({ isOpen, post, onClose, onSubmit }) {
     setThumbUploading(false);
   };
 
+  // const handleFileUpload = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+
+  //   setFileUploading(true);
+  //   try {
+  //     const file_url = await uploadFile(file, "post-content-files");
+  //     setFormData((prev) => ({ ...prev, content: file_url }));
+  //   } catch (error) {
+  //     console.error("Content file upload failed:", error);
+  //   }
+  //   setFileUploading(false);
+  // };
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    const userId = user?.uid;
+    if (!userId) return alert("You must be logged in.");
+
     setFileUploading(true);
     try {
-      const file_url = await uploadFile(file, "post-content-files");
+      // CHANGE 2
+      const securePath = `users/${userId}/post-content-files`;
+      const file_url = await uploadFile(file, securePath);
       setFormData((prev) => ({ ...prev, content: file_url }));
     } catch (error) {
       console.error("Content file upload failed:", error);

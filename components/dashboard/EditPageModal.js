@@ -4,8 +4,11 @@ import React, { useState, useEffect } from "react";
 import { X, Upload, Image as ImageIcon } from "lucide-react";
 import { uploadFile } from "@/lib/data";
 import ImageWithLoader from "@/components/ImageWithLoader";
+import { useAuth } from "@/context/AuthContext";
 
 export default function EditPageModal({ isOpen, page, onClose, onSubmit }) {
+  const { user } = useAuth();
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -38,13 +41,36 @@ export default function EditPageModal({ isOpen, page, onClose, onSubmit }) {
     onSubmit(dataToSend);
   };
 
+  // const handleFileUpload = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+
+  //   setUploading(true);
+  //   try {
+  //     const file_url = await uploadFile(file, "page-thumbnails");
+  //     setFormData((prev) => ({ ...prev, thumbnail: file_url }));
+  //   } catch (error) {
+  //     console.error("Upload failed:", error);
+  //     alert("Upload failed. See console for details.");
+  //   }
+  //   setUploading(false);
+  // };
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    const userId = user?.uid;
+    if (!userId) {
+      alert("You must be logged in to upload a file.");
+      return;
+    }
+
     setUploading(true);
     try {
-      const file_url = await uploadFile(file, "page-thumbnails");
+      // THIS IS THE KEY CHANGE
+      const securePath = `users/${userId}/page-thumbnails`;
+      const file_url = await uploadFile(file, securePath);
       setFormData((prev) => ({ ...prev, thumbnail: file_url }));
     } catch (error) {
       console.error("Upload failed:", error);

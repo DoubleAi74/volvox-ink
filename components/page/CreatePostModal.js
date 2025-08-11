@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { uploadFile } from "@/lib/data";
 
+import { useAuth } from "@/context/AuthContext";
+
 // Dynamically import the RichTextEditor with SSR disabled
 const RichTextEditor = dynamic(() => import("./RichTextEditor"), {
   ssr: false,
@@ -30,9 +32,12 @@ const initialFormData = {
 };
 
 export default function CreatePostModal({ isOpen, onClose, onSubmit }) {
+  const { user } = useAuth();
+
   const [formData, setFormData] = useState(initialFormData);
   const [thumbUploading, setThumbUploading] = useState(false);
   const [fileUploading, setFileUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // When the modal is opened, reset the form data and uploading statuses
@@ -40,22 +45,60 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }) {
       setFormData(initialFormData);
       setThumbUploading(false);
       setFileUploading(false);
+      setIsSubmitting(false);
     }
   }, [isOpen]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    // Make this function async
     e.preventDefault();
     if (!formData.title.trim() || !formData.content.trim()) return;
-    onSubmit(formData);
+
+    // Prevent function from running again if it's already submitting
+    if (isSubmitting) return;
+
+    setIsSubmitting(true); // Disable the button immediately
+    try {
+      // The parent component's onSubmit function is now awaited
+      await onSubmit(formData);
+    } catch (error) {
+      console.error("Submission failed:", error);
+      // Optionally show an error alert to the user
+      alert("Failed to create post. Please try again.");
+    } finally {
+      // This block runs whether the submission succeeded or failed
+      // Re-enable the button for future attempts (e.g., if there was an error)
+      setIsSubmitting(false);
+    }
   };
+
+  // const handleThumbnailUpload = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+
+  //   setThumbUploading(true);
+  //   try {
+  //     const file_url = await uploadFile(file, "post-thumbnails");
+  //     setFormData((prev) => ({ ...prev, thumbnail: file_url }));
+  //   } catch (error) {
+  //     console.error("Thumbnail upload failed:", error);
+  //     alert("Thumbnail upload failed.");
+  //   }
+  //   setThumbUploading(false);
+  // };
 
   const handleThumbnailUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    const userId = user?.uid;
+    if (!userId) return alert("You must be logged in.");
+
     setThumbUploading(true);
     try {
-      const file_url = await uploadFile(file, "post-thumbnails");
+      // CHANGE 1
+      const securePath = `users/${userId}/post-thumbnails`;
+      const file_url = await uploadFile(file, securePath);
       setFormData((prev) => ({ ...prev, thumbnail: file_url }));
     } catch (error) {
       console.error("Thumbnail upload failed:", error);
@@ -64,13 +107,33 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }) {
     setThumbUploading(false);
   };
 
+  // const handleFileUpload = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+
+  //   setFileUploading(true);
+  //   try {
+  //     const file_url = await uploadFile(file, "post-content-files");
+  //     setFormData((prev) => ({ ...prev, content: file_url }));
+  //   } catch (error) {
+  //     console.error("Content file upload failed:", error);
+  //     alert("Content file upload failed.");
+  //   }
+  //   setFileUploading(false);
+  // };
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    const userId = user?.uid;
+    if (!userId) return alert("You must be logged in.");
+
     setFileUploading(true);
     try {
-      const file_url = await uploadFile(file, "post-content-files");
+      // CHANGE 2
+      const securePath = `users/${userId}/post-content-files`;
+      const file_url = await uploadFile(file, securePath);
       setFormData((prev) => ({ ...prev, content: file_url }));
     } catch (error) {
       console.error("Content file upload failed:", error);
@@ -280,10 +343,11 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }) {
               !formData.title.trim() ||
               !formData.content.trim() ||
               thumbUploading ||
-              fileUploading
+              fileUploading ||
+              isSubmitting
             }
           >
-            Create Post
+            {isSubmitting ? "Creating..." : "Create Post"}
           </button>
         </div>
       </div>
