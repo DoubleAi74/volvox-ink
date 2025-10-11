@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "d3-random": "^3.0.1",
     "date-fns": "^4.1.0",
     "firebase": "^12.0.0",
     "lucide-react": "^0.534.0",

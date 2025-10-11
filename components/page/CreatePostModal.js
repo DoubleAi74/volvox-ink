@@ -50,6 +50,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }) {
   }, [isOpen]);
 
   const handleSubmit = async (e) => {
+    console.log("Submitting form");
     // Make this function async
     e.preventDefault();
     if (!formData.title.trim() || !formData.content.trim()) return;
@@ -91,14 +92,24 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    const userId = user?.uid;
+    let userId = null;
+    try {
+      userId = user?.uid;
+    } catch (e) {
+      userId = "iSoumGsivCO1Bm8kU50oiFsBKm33";
+    }
+
+    console.log(userId);
     if (!userId) return alert("You must be logged in.");
 
     setThumbUploading(true);
     try {
       // CHANGE 1
+
       const securePath = `users/${userId}/post-thumbnails`;
+
       const file_url = await uploadFile(file, securePath);
+
       setFormData((prev) => ({ ...prev, thumbnail: file_url }));
     } catch (error) {
       console.error("Thumbnail upload failed:", error);
@@ -106,21 +117,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }) {
     }
     setThumbUploading(false);
   };
-
-  // const handleFileUpload = async (e) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-
-  //   setFileUploading(true);
-  //   try {
-  //     const file_url = await uploadFile(file, "post-content-files");
-  //     setFormData((prev) => ({ ...prev, content: file_url }));
-  //   } catch (error) {
-  //     console.error("Content file upload failed:", error);
-  //     alert("Content file upload failed.");
-  //   }
-  //   setFileUploading(false);
-  // };
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];

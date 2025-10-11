@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { Plus, ArrowLeft } from "lucide-react";
@@ -15,6 +16,14 @@ import {
 import PostCard from "@/components/page/PostCard";
 import CreatePostModal from "@/components/page/CreatePostModal";
 import EditPostModal from "@/components/page/EditPostModal";
+// <-- ADDED: Meditation timer modal (adjust path if your project stores it elsewhere)
+import MeditationTimerModal from "@/components/MeditationTimerModal";
+
+import RandomizedImage, {
+  generateRandomParams,
+} from "@/components/RandomizedImage";
+
+import Image from "next/image";
 
 export default function PageSlugView({ params }) {
   const { username, pageSlug } = params;
@@ -25,6 +34,10 @@ export default function PageSlugView({ params }) {
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
+  const [isPublic, setPublicPage] = useState(false);
+
+  // NEW: state for meditation modal
+  const [showMeditationModal, setShowMeditationModal] = useState(false);
 
   const refreshPosts = useCallback(async (pageId) => {
     if (!pageId) return;
@@ -32,16 +45,38 @@ export default function PageSlugView({ params }) {
     setPosts(postData);
   }, []);
 
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    // open modal if ?meditate=1 or ?meditate=true
+    const meditate = searchParams.get("meditate");
+    if (meditate === "1" || meditate === "true") {
+      setShowMeditationModal(true);
+
+      // remove the param from the URL without adding a new history entry
+      // (router.replace with just pathname strips query)
+      // Note: router.replace will trigger a navigation within App Router but
+      // without reloading data if pathname is the same.
+      router.replace(pathname);
+    }
+    // only run when searchParams changes
+  }, [searchParams, pathname, router]);
+
   useEffect(() => {
     const loadPageData = async () => {
       setLoading(true);
       const profileUser = await getUserByUsername(username);
+
       if (profileUser) {
         const pageData = await getPageBySlug(profileUser.uid, pageSlug);
+        //console.log(pageData);
         setPage(pageData);
         if (pageData) {
           await refreshPosts(pageData.id);
           setIsOwner(currentUser && currentUser.uid === profileUser.uid);
+          setPublicPage(pageData.isPublic);
         }
       }
       setLoading(false);
@@ -50,7 +85,8 @@ export default function PageSlugView({ params }) {
   }, [username, pageSlug, currentUser, refreshPosts]);
 
   const handleCreatePost = async (postData) => {
-    if (!isOwner || !page) return;
+    if (!(isOwner || isPublic) || !page) return;
+
     try {
       const maxOrder =
         posts.length > 0
@@ -96,16 +132,35 @@ export default function PageSlugView({ params }) {
   if (loading) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="w-16 h-16 rounded-full bg-neumorphic-bg shadow-neumorphic-inset animate-pulse"></div>
+        <div className="w-36 h-36 rounded-full bg-[#f7f3ed] flex items-center justify-center shadow-neumorphic-inset animate-pulse">
+          <Image
+            src="/logo-lotus.png" // <- file in public/
+            alt="Logo"
+            width={100}
+            height={100}
+          />
+        </div>
       </div>
     );
   }
 
   if (!page) {
     return (
-      <div className="p-16 text-center text-xl text-neumorphic">
-        Page not found.
-      </div>
+      <>
+        <div className="p-16 text-center text-xl text-neumorphic">
+          Page not found.
+        </div>
+
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+          <h1 className="text-2xl mb-4">Randomized Image Example</h1>
+          <RandomizedImage
+            imageSrc="/logo-lotus4.png"
+            params={Rparams}
+            width={800}
+            imgProps={{ className: "rounded-lg shadow-md" }}
+          />
+        </div>
+      </>
     );
   }
 
@@ -115,7 +170,7 @@ export default function PageSlugView({ params }) {
         {/* THIS ENTIRE HEADER SECTION HAS BEEN RESTORED */}
         <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
           <Link href={`/${username}`}>
-            <button className="p-3 w-full md:w-auto rounded-xl btn-neumorphic shadow-neumorphic hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed">
+            <button className="p-3 w-full md:w-auto rounded-xl bg-[#f7f3ed] shadow-md hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed">
               <ArrowLeft className="w-5 h-5 text-neumorphic-text mx-auto md:mx-0" />
             </button>
           </Link>
@@ -125,15 +180,29 @@ export default function PageSlugView({ params }) {
               <p className="text-neumorphic-text mt-1">{page.description}</p>
             )}
           </div>
-          {isOwner && (
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 rounded-xl btn-neumorphic shadow-neumorphic text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
-            >
-              <Plus className="w-5 h-5" />
-              New Post
-            </button>
-          )}
+
+          {/* NEW: Buttons area (Create Post + Meditate Now) */}
+
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            {username === "the-lotus-seed" && pageSlug === "meditations" && (
+              <button
+                onClick={() => setShowMeditationModal(true)}
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-[#313232] shadow-md bg-[#aad8d3] text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+                aria-label="Meditate now"
+              >
+                Meditate now
+              </button>
+            )}
+            {(isOwner || isPublic) && (
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl  shadow-md bg-[#f7f3ed] text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+              >
+                <Plus className="w-5 h-5" />
+                New Post
+              </button>
+            )}
+          </div>
         </div>
 
         {posts.length === 0 ? (
@@ -161,7 +230,7 @@ export default function PageSlugView({ params }) {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {posts.map((post) => (
+            {[...posts].reverse().map((post) => (
               <PostCard
                 key={post.id}
                 post={post}
@@ -177,7 +246,7 @@ export default function PageSlugView({ params }) {
           </div>
         )}
 
-        {isOwner && (
+        {isOwner ? (
           <>
             <CreatePostModal
               isOpen={showCreateModal}
@@ -191,7 +260,31 @@ export default function PageSlugView({ params }) {
               onSubmit={handleEditPost}
             />
           </>
+        ) : isPublic ? (
+          (console.log("Public page - show create post modal"),
+          (
+            <>
+              <CreatePostModal
+                isOpen={showCreateModal}
+                onClose={() => setShowCreateModal(false)}
+                onSubmit={handleCreatePost}
+              />
+            </>
+          ))
+        ) : (
+          <></>
         )}
+
+        {/* NEW: Meditation timer modal. It will close when the modal calls onClose (e.g. X) */}
+        <MeditationTimerModal
+          isOpen={showMeditationModal}
+          onClose={() => {
+            setShowMeditationModal(false);
+            refreshPosts(page.id);
+          }}
+          defaultMinutes={15}
+          posts={posts}
+        />
       </div>
     </div>
   );

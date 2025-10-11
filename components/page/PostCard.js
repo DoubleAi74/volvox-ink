@@ -12,6 +12,10 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 
+import RandomizedImage, {
+  generateRandomParams,
+} from "@/components/RandomizedImage";
+
 const contentTypeIcons = {
   text: Type,
   file: File,
@@ -47,9 +51,18 @@ export default function PostCard({
   return (
     <div className="group relative">
       <PostContentWrapper post={post} username={username} pageSlug={pageSlug}>
-        <div className="p-1 rounded-2xl bg-neumorphic-bg shadow-neumorphic hover:shadow-neumorphic-soft transition-all duration-300 cursor-pointer h-full flex flex-col">
-          {post.thumbnail ? (
-            <div className="w-full h-32 mb-1 rounded-t-xl rounded-b-md overflow-hidden shadow-neumorphic-inset">
+        <div className="p-2 rounded-lg bg-[#f7f3ed]  shadow-md hover:shadow-neumorphic-soft transition-all duration-300 cursor-pointer h-full flex flex-col">
+          {pageSlug === "meditations" ? (
+            <div className="w-full aspect-[16/9] mb-4 rounded-md overflow-hidden">
+              <RandomizedImage
+                imageSrc="/logo-lotus4.png"
+                params={post.thumbnail}
+                width={800}
+                imgProps={{ className: "rounded-lg shadow-md" }}
+              />
+            </div>
+          ) : post.thumbnail ? (
+            <div className="w-full aspect-[16/9] mb-4 rounded-md overflow-hidden">
               <img
                 src={post.thumbnail}
                 alt={post.title}
@@ -57,7 +70,7 @@ export default function PostCard({
               />
             </div>
           ) : (
-            <div className="w-full h-32 mb-1 rounded-t-xl rounded-b-md bg-neumorphic-bg shadow-neumorphic-inset flex items-center justify-center">
+            <div className="w-full aspect-[16/9] mb-4 rounded-md shadow-md bg-neumorphic-bg flex items-center justify-center flex items-center justify-center">
               <ContentIcon className="w-8 h-8 text-neumorphic-text" />
             </div>
           )}

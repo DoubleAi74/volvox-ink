@@ -3,22 +3,22 @@
 @tailwind utilities;
 
 body {
-  background-color: #e0e0e0;
+  background-color: #faebd9;
 }
 
-/* Neumorphic Shadow Styles */
+/* Neumorphic Shadow Styles
 .shadow-neumorphic {
   box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
-}
-.shadow-neumorphic-inset {
+} */
+/* .shadow-neumorphic-inset {
   box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
-}
-.shadow-neumorphic-pressed {
+} */
+/* .shadow-neumorphic-pressed {
   box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff;
 }
 .shadow-neumorphic-soft {
   box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff;
-}
+} */
 
 /* Neumorphic Text Styles */
 .text-neumorphic {
@@ -28,7 +28,7 @@ body {
 
 /* Neumorphic Button Base Styles */
 .btn-neumorphic {
-  background: #e0e0e0;
+  background: #fffef8;
   border: none;
   transition: all 0.2s ease;
 }

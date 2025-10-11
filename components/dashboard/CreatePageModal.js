@@ -12,6 +12,7 @@ const initialFormData = {
   description: "",
   thumbnail: "",
   isPrivate: false,
+  isPublic: false,
 };
 
 export default function CreatePageModal({ isOpen, onClose, onSubmit }) {
@@ -53,22 +54,6 @@ export default function CreatePageModal({ isOpen, onClose, onSubmit }) {
     }
   };
 
-  // const handleFileUpload = async (e) => {
-  //   const file = e.target.files[0];
-  //   if (!file) return;
-
-  //   setUploading(true);
-  //   try {
-  //     // This will use our mock function for now
-  //     const file_url = await uploadFile(file, "page-thumbnails"); // Added path
-  //     setFormData((prev) => ({ ...prev, thumbnail: file_url }));
-  //   } catch (error) {
-  //     console.error("Upload failed:", error);
-  //     alert("Upload failed. See console for details.");
-  //   }
-  //   setUploading(false);
-  // };
-
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -82,9 +67,6 @@ export default function CreatePageModal({ isOpen, onClose, onSubmit }) {
 
     setUploading(true);
     try {
-      // THIS IS THE KEY CHANGE
-      // FROM: "page-thumbnails"
-      // TO:   `users/${userId}/page-thumbnails`
       const securePath = `users/${userId}/page-thumbnails`;
       const file_url = await uploadFile(file, securePath);
       setFormData((prev) => ({ ...prev, thumbnail: file_url }));
@@ -156,13 +138,32 @@ export default function CreatePageModal({ isOpen, onClose, onSubmit }) {
                   isPrivate: e.target.checked,
                 }))
               }
-              className="h-4 w-4 rounded bg-neumorphic-bg shadow-neumorphic-inset appearance-none checked:bg-blue-500 cursor-pointer"
+              className="h-4 w-4 rounded  shadow-neumorphic-inset appearance-none checked:bg-blue-900 checked:border-blue-950 cursor-pointer"
             />
             <label
               htmlFor="isPrivateCheckbox"
               className="text-sm font-medium text-neumorphic cursor-pointer"
             >
               Make this page private
+            </label>
+
+            <input
+              type="checkbox"
+              id="isPublicCheckbox"
+              checked={formData.isPublic}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  isPublic: e.target.checked,
+                }))
+              }
+              className="h-4 w-4 rounded bg-neumorphic-bg shadow-neumorphic-inset appearance-none checked:bg-blue-500 cursor-pointer"
+            />
+            <label
+              htmlFor="isPublicCheckbox"
+              className="text-sm font-medium text-neumorphic cursor-pointer"
+            >
+              Make this page public
             </label>
           </div>
 

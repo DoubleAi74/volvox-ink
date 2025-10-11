@@ -1,5 +1,7 @@
 "use client";
 
+import DashHeader from "@/components/dashboard/DashHeader";
+import MeditationTimerModal from "@/components/MeditationTimerModal";
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Plus } from "lucide-react";
@@ -14,6 +16,10 @@ import {
   getUserByUsername,
 } from "@/lib/data";
 
+import { useRouter } from "next/navigation";
+
+import Image from "next/image";
+
 export default function UserDashboard({ params }) {
   const { user: currentUser } = useAuth();
   const [profileUser, setProfileUser] = useState(null);
@@ -21,6 +27,8 @@ export default function UserDashboard({ params }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingPage, setEditingPage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showMeditationModal, setShowMeditationModal] = useState(false);
+  const router = useRouter();
 
   const isOwner =
     currentUser && profileUser && currentUser.uid === profileUser.uid;
@@ -116,7 +124,14 @@ export default function UserDashboard({ params }) {
   if (loading) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="w-16 h-16 rounded-full bg-neumorphic-bg shadow-neumorphic-inset animate-pulse"></div>
+        <div className="w-36 h-36 rounded-full bg-[#f7f3ed] flex items-center justify-center shadow-neumorphic-inset animate-pulse">
+          <Image
+            src="/logo-lotus.png" // <- file in public/
+            alt="Logo"
+            width={100}
+            height={100}
+          />
+        </div>
       </div>
     );
   }
@@ -129,25 +144,26 @@ export default function UserDashboard({ params }) {
     );
   }
 
-  // The rest of the component's JSX remains the same.
   return (
     <div className="p-6">
+      <DashHeader title={`${params.username}`} defaultHex="#00502F" alpha={1} />
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-neumorphic mb-2">
-              {params.username + "'s"} Pages
+            <h1 className="text-3xl font-bold  mb-2">
+              {/* {params.username} */}
             </h1>
-            {isOwner && (
+            {/* {isOwner && (
               <p className="text-neumorphic">
                 This is your public dashboard. Welcome!
               </p>
-            )}
+            )} */}
           </div>
+
           {isOwner && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl btn-neumorphic shadow-neumorphic text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
             >
               <Plus className="w-5 h-5" />
               New Page
@@ -197,6 +213,15 @@ export default function UserDashboard({ params }) {
           </>
         )}
       </div>
+      <button
+        onClick={() => router.push("./the-lotus-seed/meditations?meditate=1")}
+        aria-label="Meditate now"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-3 mb-8 mr-8  px-5 py-3 rounded-xl shadow-md bg-[#aad8d3] text-313232 font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
+      >
+        {/* optional icon */}
+        {/* <Plus className="w-4 h-4" /> */}
+        Meditate now
+      </button>
     </div>
   );
 }

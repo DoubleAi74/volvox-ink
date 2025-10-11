@@ -160,13 +160,32 @@ export default function EditPageModal({ isOpen, page, onClose, onSubmit }) {
                   isPrivate: e.target.checked,
                 }))
               }
-              className="h-4 w-4 rounded bg-neumorphic-bg shadow-neumorphic-inset appearance-none checked:bg-blue-500 cursor-pointer"
+              className="h-4 w-4 rounded bg-neumorphic-bg shadow-neumorphic-inset appearance-none checked:bg-blue-900 cursor-pointer"
             />
             <label
               htmlFor="isPrivateEditCheckbox"
               className="text-sm font-medium text-neumorphic cursor-pointer"
             >
               Make this page private
+            </label>
+
+            <input
+              type="checkbox"
+              id="isPublicEditCheckbox"
+              checked={formData.isPublic}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  isPublic: e.target.checked,
+                }))
+              }
+              className="h-4 w-4 rounded bg-neumorphic-bg shadow-neumorphic-inset appearance-none checked:bg-blue-900 cursor-pointer"
+            />
+            <label
+              htmlFor="isPublicEditCheckbox"
+              className="text-sm font-medium text-neumorphic cursor-pointer"
+            >
+              Make this page public
             </label>
           </div>
 
