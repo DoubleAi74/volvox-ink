@@ -43,7 +43,7 @@ export default function DashHeader({
               width={70}
               height={70}
             />
-            <h1 className="truncate text-lg sm:text-xl md:text-3xl font-extrabold tracking-tight text-white drop-shadow">
+            <h1 className="truncate text-xl sm:text-xl md:text-3xl font-extrabold tracking-tight text-white drop-shadow">
               {title}
             </h1>
           </div>
