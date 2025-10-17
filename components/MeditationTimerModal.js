@@ -63,6 +63,11 @@ export default function MeditationTimerModal({
   const [extraMinutesAdded, setExtraMinutesAdded] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // to toggle between the tabs
+  const [onSimple, setOnSimple] = useState(true);
+  const [onStages, setOnStages] = useState(false);
+  const [onAdvanced, setOnAdvanced] = useState(false);
+
   // Refs for drift-free ticking
   const lastTickRef = useRef(null); // number | null
   const rafIdRef = useRef(null); // number | null
@@ -484,7 +489,7 @@ export default function MeditationTimerModal({
         }
       }}
     >
-      <div className="bg-neumorphic-bg rounded-2xl shadow-neumorphic p-6 w-full max-w-md flex flex-col">
+      <div className="bg-neumorphic-bg rounded-xl shadow-xl p-6 w-full max-w-md flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold text-neumorphic">
@@ -502,82 +507,134 @@ export default function MeditationTimerModal({
           </button>
         </div>
 
-        {/* Body */}
-        <div className="flex flex-col items-center gap-6 py-6">
-          {/* Time + Incrementers (pre-start only) */}
-          <div className="flex items-center gap-4">
-            {!hasStarted && (
-              <button
-                aria-label="Decrease minutes"
-                onClick={decMinute}
-                className="p-3 rounded-xl btn-neumorphic shadow-neumorphic hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
-              >
-                <Minus className="w-4 h-4 text-neumorphic-text" />
-              </button>
-            )}
-
-            <div className="min-w-[220px] text-center select-none rounded-2xl shadow-neumorphic-inset px-6 py-6 font-mono text-5xl text-neumorphic-text tracking-widest">
-              {formatMs(remainingMs)}
-            </div>
-
-            {!hasStarted && (
-              <button
-                aria-label="Increase minutes"
-                onClick={incMinute}
-                className="p-3 rounded-xl btn-neumorphic shadow-neumorphic hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
-              >
-                <Plus className="w-4 h-4 text-neumorphic-text" />
-              </button>
-            )}
-          </div>
-
-          <div className="text-sm text-neumorphic-text/70 h-5">
-            {isRunning ? "running" : hasStarted ? "paused" : "ready"}
-          </div>
-        </div>
-
-        {/* Footer controls */}
+        {/* Tabs */}
         <div className="flex items-center gap-3 mt-auto pt-4 border-t border-neumorphic-shadow-dark/20">
           <button
             type="button"
-            onClick={handleReset}
-            disabled={!hasStarted && remainingMs === initialMinutes * 60_000}
-            className="flex-1 py-3 rounded-xl btn-neumorphic shadow-neumorphic text-neumorphic-text disabled:opacity-50 hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+            onClick={() => {
+              setOnSimple(true);
+              setOnStages(false);
+              setOnAdvanced(false);
+            }}
+            disabled={onSimple}
+            className="flex-1 py-3 rounded-xl btn-neumorphic shadow-lg text-neumorphic-text disabled:opacity-50 hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
           >
-            Reset
+            Simple
           </button>
-
-          {isRunning ? (
-            <button
-              type="button"
-              onClick={handlePause}
-              className="flex-1 py-3 rounded-xl btn-neumorphic shadow-neumorphic text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
-            >
-              Pause
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleStart}
-              disabled={remainingMs <= 0}
-              className="flex-1 py-3 rounded-xl btn-neumorphic shadow-neumorphic text-neumorphic-text font-medium disabled:opacity-50 hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
-            >
-              Start
-            </button>
-          )}
 
           <button
             type="button"
             onClick={() => {
-              if (isRunning) handlePause();
-              setShowEndDialog(true);
-              setFormData(initialFormData);
+              setOnSimple(false);
+              setOnStages(true);
+              setOnAdvanced(false);
             }}
-            className="flex-1 py-3 rounded-xl btn-neumorphic shadow-neumorphic text-neumorphic-text hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+            disabled={onStages}
+            className="flex-1 py-3 rounded-xl btn-neumorphic shadow-lg text-neumorphic-text font-medium disabled:opacity-50 hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
           >
-            Fin
+            Stages
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setOnSimple(false);
+              setOnStages(false);
+              setOnAdvanced(true);
+            }}
+            disabled={onAdvanced}
+            className="flex-1 py-3 rounded-xl btn-neumorphic shadow-lg text-neumorphic-text font-medium disabled:opacity-50 hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+          >
+            Advanced
           </button>
         </div>
+
+        {onSimple && (
+          <>
+            {/* Body */}
+            <div className="flex flex-col items-center gap-6 py-6">
+              {/* Time + Incrementers (pre-start only) */}
+              <div className="flex items-center gap-4">
+                {!hasStarted && (
+                  <button
+                    aria-label="Decrease minutes"
+                    onClick={decMinute}
+                    className="p-3 rounded-xl btn-neumorphic shadow-neumorphic hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+                  >
+                    <Minus className="w-4 h-4 text-neumorphic-text" />
+                  </button>
+                )}
+
+                <div className="min-w-[220px] text-center select-none rounded-2xl shadow-neumorphic-inset px-6 py-6 font-mono text-5xl text-neumorphic-text tracking-widest">
+                  {formatMs(remainingMs)}
+                </div>
+
+                {!hasStarted && (
+                  <button
+                    aria-label="Increase minutes"
+                    onClick={incMinute}
+                    className="p-3 rounded-xl btn-neumorphic shadow-neumorphic hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+                  >
+                    <Plus className="w-4 h-4 text-neumorphic-text" />
+                  </button>
+                )}
+              </div>
+
+              <div className="text-sm text-neumorphic-text/70 h-5">
+                {isRunning ? "running" : hasStarted ? "paused" : "ready"}
+              </div>
+            </div>
+
+            {/* Footer controls */}
+            <div className="flex items-center gap-3 mt-auto pt-4 border-t border-neumorphic-shadow-dark/20">
+              <button
+                type="button"
+                onClick={handleReset}
+                disabled={
+                  !hasStarted && remainingMs === initialMinutes * 60_000
+                }
+                className="flex-1 py-3 rounded-xl btn-neumorphic shadow-neumorphic text-neumorphic-text disabled:opacity-50 hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+              >
+                Reset
+              </button>
+
+              {isRunning ? (
+                <button
+                  type="button"
+                  onClick={handlePause}
+                  className="flex-1 py-3 rounded-xl btn-neumorphic shadow-neumorphic text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+                >
+                  Pause
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleStart}
+                  disabled={remainingMs <= 0}
+                  className="flex-1 py-3 rounded-xl btn-neumorphic shadow-neumorphic text-neumorphic-text font-medium disabled:opacity-50 hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+                >
+                  Start
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (isRunning) handlePause();
+                  setShowEndDialog(true);
+                  setFormData(initialFormData);
+                }}
+                className="flex-1 py-3 rounded-xl btn-neumorphic shadow-neumorphic text-neumorphic-text hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+              >
+                Fin
+              </button>
+            </div>
+          </>
+        )}
+
+        {onStages && <p>Stages section coming soon!</p>}
+
+        {onAdvanced && <p>Custom advanced stages coming soon!</p>}
 
         {/* End-of-session popup */}
         {showEndDialog && (

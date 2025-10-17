@@ -151,11 +151,29 @@ export default function PageSlugView({ params }) {
           Page not found.
         </div>
 
+        <MeditationTimerModal
+          isOpen={true}
+          onClose={() => {
+            setShowMeditationModal(false);
+          }}
+          defaultMinutes={15}
+          posts={posts}
+        />
+
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
           <h1 className="text-2xl mb-4">Randomized Image Example</h1>
           <RandomizedImage
             imageSrc="/logo-lotus4.png"
-            params={Rparams}
+            params={{
+              bShift: -19,
+              backgroundColor: "#d8e8e5",
+              gShift: -11,
+              offsetX: 6.208200019107846,
+              offsetY: -7.717280578508823,
+              rShift: 32,
+              rotationAngle: -6.935702624417267,
+              scale: 1.230609125506053,
+            }}
             width={800}
             imgProps={{ className: "rounded-lg shadow-md" }}
           />
@@ -252,6 +270,7 @@ export default function PageSlugView({ params }) {
               isOpen={showCreateModal}
               onClose={() => setShowCreateModal(false)}
               onSubmit={handleCreatePost}
+              lotusThumb={pageSlug === "meditations"}
             />
             <EditPostModal
               isOpen={!!editingPost}
@@ -268,6 +287,7 @@ export default function PageSlugView({ params }) {
                 isOpen={showCreateModal}
                 onClose={() => setShowCreateModal(false)}
                 onSubmit={handleCreatePost}
+                lotusThumb={pageSlug === "meditations"}
               />
             </>
           ))

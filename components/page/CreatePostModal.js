@@ -31,7 +31,12 @@ const initialFormData = {
   content: "",
 };
 
-export default function CreatePostModal({ isOpen, onClose, onSubmit }) {
+export default function CreatePostModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  lotusThumb,
+}) {
   const { user } = useAuth();
 
   const [formData, setFormData] = useState(initialFormData);
@@ -57,6 +62,11 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit }) {
 
     // Prevent function from running again if it's already submitting
     if (isSubmitting) return;
+
+    // Sets the random thumbnail specification (Need to test)
+    if (lotusThumb && !formData.thumbnail) {
+      setFormData((prev) => ({ ...prev, thumbnail: generateRandomParams() }));
+    }
 
     setIsSubmitting(true); // Disable the button immediately
     try {

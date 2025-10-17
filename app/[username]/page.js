@@ -138,9 +138,16 @@ export default function UserDashboard({ params }) {
 
   if (!profileUser) {
     return (
-      <div className="p-16 text-center text-xl text-neumorphic">
-        Looking for {params.username + "'s"} page.
-      </div>
+      <>
+        <DashHeader
+          title={`${params.username}`}
+          defaultHex="#00502F"
+          alpha={1}
+        />
+        <div className="p-16 text-center text-xl text-neumorphic">
+          Looking for {params.username + "'s"} page.
+        </div>
+      </>
     );
   }
 
