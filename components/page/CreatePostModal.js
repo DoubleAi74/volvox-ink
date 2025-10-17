@@ -12,6 +12,9 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { uploadFile } from "@/lib/data";
+import RandomizedImage, {
+  generateRandomParams,
+} from "@/components/RandomizedImage";
 
 import { useAuth } from "@/context/AuthContext";
 
