@@ -68,6 +68,7 @@ export default function CreatePostModal({
 
     // Sets the random thumbnail specification (Need to test)
     if (lotusThumb && !formData.thumbnail) {
+      console.log("setting random");
       setFormData((prev) => ({ ...prev, thumbnail: generateRandomParams() }));
     }
 
