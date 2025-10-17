@@ -50,7 +50,7 @@ export default function DashHeader({
 
           <Image
             src="/med-logo.png" // <- file in public/
-            alt="Leeds Uni Clocktower"
+            alt="Meditation soc logo"
             className="hidden sm:block"
             width={70}
             height={70}
