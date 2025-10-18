@@ -4,7 +4,7 @@ import DashHeader from "@/components/dashboard/DashHeader";
 import MeditationTimerModal from "@/components/MeditationTimerModal";
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Plus } from "lucide-react";
+import { Plus, LogOut, User as UserIcon } from "lucide-react";
 import PageCard from "@/components/dashboard/PageCard";
 import CreatePageModal from "@/components/dashboard/CreatePageModal";
 import EditPageModal from "@/components/dashboard/EditPageModal";
@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function UserDashboard({ params }) {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, logout } = useAuth();
   const [profileUser, setProfileUser] = useState(null);
   const [pages, setPages] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -42,6 +42,15 @@ export default function UserDashboard({ params }) {
     },
     [isOwner]
   );
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Failed to log out:", error);
+    }
+  };
 
   // This single useEffect now handles the entire loading process.
   useEffect(() => {
@@ -160,21 +169,35 @@ export default function UserDashboard({ params }) {
             <h1 className="text-3xl font-bold  mb-2">
               {/* {params.username} */}
             </h1>
-            {/* {isOwner && (
-              <p className="text-neumorphic">
-                This is your public dashboard. Welcome!
-              </p>
-            )} */}
           </div>
 
           {isOwner && (
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
-            >
-              <Plus className="w-5 h-5" />
-              New Page
-            </button>
+            <div className="flex items-center gap-4 mt-4 fixed bottom-6 right-8">
+              {/* New Page Button */}
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="flex items-center gap-2 px-6 py-2 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed h-[44px]" // same height across all
+              >
+                <Plus className="w-5 h-5" />
+                New Page
+              </button>
+
+              {/* User Info + Logout */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 px-6 py-2 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text h-[44px]">
+                  <UserIcon className="w-5 h-5" />
+                  <span className="text-sm">{currentUser.email}</span>
+                </div>
+
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center justify-center px-6 py-2 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed h-[44px]"
+                  title="Log Out"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
           )}
         </div>
 
@@ -223,7 +246,7 @@ export default function UserDashboard({ params }) {
       <button
         onClick={() => router.push("./the-lotus-seed/meditations?meditate=1")}
         aria-label="Meditate now"
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-3 mb-8 mr-8  px-5 py-3 rounded-xl shadow-md bg-[#aad8d3] text-313232 font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
+        className="fixed bottom-6 left-6 z-50 flex items-center gap-3 mb-6 ml-6  px-7 py-5 rounded-xl shadow-md bg-[#aad8d3] text-313232 font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
       >
         {/* optional icon */}
         {/* <Plus className="w-4 h-4" /> */}

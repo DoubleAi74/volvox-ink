@@ -15,7 +15,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <AuthContextProvider>
-          <Header /> {/* 2. Render the Header here */}
           <main className="flex-1">{children}</main>
         </AuthContextProvider>
       </body>

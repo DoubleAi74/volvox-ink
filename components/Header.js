@@ -28,7 +28,7 @@ export default function Header() {
             href={user.username ? `/${user.username}` : "/"}
             className="flex items-center gap-3"
           >
-            <div className="w-10 h-10 rounded-lg bg-neumorphic-bg shadow-neumorphic flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-neumorphic-bg  flex items-center justify-center">
               <Home className="w-5 h-5 text-neumorphic-text" />
             </div>
             <h1 className="text-xl font-bold text-neumorphic">Dashboard</h1>
