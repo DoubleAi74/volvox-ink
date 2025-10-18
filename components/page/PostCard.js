@@ -48,11 +48,27 @@ export default function PostCard({
 }) {
   const ContentIcon = contentTypeIcons[post.content_type] || FileText;
 
+  if (pageSlug === "meditations") {
+    console.log(
+      post.slug,
+      "rando",
+      post.thumbnail,
+      typeof post.thumbnail === "string"
+    );
+  } else {
+    if (post.thumbnail) {
+      console.log(post.slug, "thumb");
+    } else {
+      console.log(post.slug, "no thumb");
+    }
+  }
+
   return (
     <div className="group relative">
       <PostContentWrapper post={post} username={username} pageSlug={pageSlug}>
         <div className="p-2 rounded-lg bg-[#f7f3ed]  shadow-md hover:shadow-neumorphic-soft transition-all duration-300 cursor-pointer h-full flex flex-col">
-          {pageSlug === "meditations" ? (
+          {pageSlug === "meditations" &&
+          !(typeof post.thumbnail === "string") ? (
             <div className="w-full aspect-[16/9] mb-4 rounded-md overflow-hidden">
               <RandomizedImage
                 imageSrc="/logo-lotus4.png"

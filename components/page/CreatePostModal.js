@@ -66,16 +66,20 @@ export default function CreatePostModal({
     // Prevent function from running again if it's already submitting
     if (isSubmitting) return;
 
+    let postData = { ...formData };
+
     // Sets the random thumbnail specification (Need to test)
     if (lotusThumb && !formData.thumbnail) {
       console.log("setting random");
-      setFormData((prev) => ({ ...prev, thumbnail: generateRandomParams() }));
+      postData = { ...postData, thumbnail: generateRandomParams() };
     }
+
+    setFormData(postData);
 
     setIsSubmitting(true); // Disable the button immediately
     try {
       // The parent component's onSubmit function is now awaited
-      await onSubmit(formData);
+      await onSubmit(postData);
     } catch (error) {
       console.error("Submission failed:", error);
       // Optionally show an error alert to the user
