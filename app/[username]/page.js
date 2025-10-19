@@ -1,7 +1,7 @@
 "use client";
 
 import DashHeader from "@/components/dashboard/DashHeader";
-import MeditationTimerModal from "@/components/MeditationTimerModal";
+import DashboardInfoEditor from "@/components/dashboard/DashboardInfoEditor";
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Plus, LogOut, User as UserIcon } from "lucide-react";
@@ -201,6 +201,8 @@ export default function UserDashboard({ params }) {
           )}
         </div>
 
+        <DashboardInfoEditor uid={currentUser?.uid} />
+
         {pages.length === 0 ? (
           <div className="text-center py-16">
             <h3 className="text-xl font-semibold text-neumorphic">
@@ -226,7 +228,6 @@ export default function UserDashboard({ params }) {
             ))}
           </div>
         )}
-
         {isOwner && (
           <>
             <CreatePageModal
