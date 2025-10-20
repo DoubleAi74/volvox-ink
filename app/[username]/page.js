@@ -275,18 +275,21 @@ export default function UserDashboard({ params }) {
               editOn={editOn}
             />
           </div>
+
           <div className=" hidden md:block w-1/5 justify-center ">
-            <button
-              onClick={() =>
-                router.push("./the-lotus-seed/meditations?meditate=1")
-              }
-              aria-label="Meditate now"
-              className="  z-50 flex items-center gap-3 mb-6 ml-10  px-7 py-5 h-[65px] rounded-xl shadow-md border-2 border-[#80a4a0]/30 hover:border-[#58817c] bg-[#aad8d3] text-[#545656] font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
-            >
-              {/* optional icon */}
-              {/* <Plus className="w-4 h-4" /> */}
-              Meditate now
-            </button>
+            {params.username === "the-lotus-seed" && (
+              <button
+                onClick={() =>
+                  router.push("./the-lotus-seed/meditations?meditate=1")
+                }
+                aria-label="Meditate now"
+                className="  z-50 flex items-center gap-3 mb-6 ml-10  px-7 py-5 h-[65px] rounded-xl shadow-md border-2 border-[#80a4a0]/30 hover:border-[#58817c] bg-[#aad8d3] text-[#545656] font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
+              >
+                {/* optional icon */}
+                {/* <Plus className="w-4 h-4" /> */}
+                Meditate now
+              </button>
+            )}
           </div>
         </div>
 
@@ -332,15 +335,18 @@ export default function UserDashboard({ params }) {
           </>
         )}
       </div>
-      <button
-        onClick={() => router.push("./the-lotus-seed/meditations?meditate=1")}
-        aria-label="Meditate now"
-        className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 mb-6  px-7 py-5 rounded-xl shadow-md border-2 border-[#80a4a0]/30 hover:border-[#58817c] bg-[#aad8d3] text-[#545656] font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
-      >
-        {/* optional icon */}
-        {/* <Plus className="w-4 h-4" /> */}
-        Meditate now
-      </button>
+
+      {params.username === "the-lotus-seed" && (
+        <button
+          onClick={() => router.push("./the-lotus-seed/meditations?meditate=1")}
+          aria-label="Meditate now"
+          className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 mb-6  px-7 py-5 rounded-xl shadow-md border-2 border-[#80a4a0]/30 hover:border-[#58817c] bg-[#aad8d3] text-[#545656] font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
+        >
+          {/* optional icon */}
+          {/* <Plus className="w-4 h-4" /> */}
+          Meditate now
+        </button>
+      )}
     </div>
   );
 }
