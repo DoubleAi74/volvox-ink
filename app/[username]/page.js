@@ -262,15 +262,6 @@ export default function UserDashboard({ params }) {
                   <UserIcon className="w-5 h-5" />
                   <span className="text-sm">Create your own volvox page</span>
                 </button>
-
-                <button
-                  onClick={() => router.push("/login")}
-                  className="flex items-center justify-center px-4 py-2 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed h-[44px]"
-                  title="Log In"
-                >
-                  <p className="font-medium mr-1">Login</p>
-                  <LogIn className=" h-5" />
-                </button>
               </div>
             </div>
           )}
