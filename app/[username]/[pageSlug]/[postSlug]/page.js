@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getPageBySlug, getPostBySlug, getUserByUsername } from "@/lib/data";
+import Image from "next/image";
 
 export default function PostSlugView({ params }) {
   const router = useRouter();
@@ -32,7 +33,14 @@ export default function PostSlugView({ params }) {
   if (loading) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
-        <div className="w-16 h-16 rounded-full bg-neumorphic-bg shadow-neumorphic-inset animate-pulse"></div>
+        <div className="w-36 h-36 rounded-full bg-[#f7f3ed] flex items-center justify-center shadow-neumorphic-inset animate-pulse">
+          <Image
+            src="/logo-lotus.png" // <- file in public/
+            alt="Logo"
+            width={100}
+            height={100}
+          />
+        </div>
       </div>
     );
   }

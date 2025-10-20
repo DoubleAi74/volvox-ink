@@ -10,6 +10,7 @@ export default function PageCard({
   onDelete,
   onEdit,
   isOwner,
+  editModeOn,
   username,
 }) {
   // Accept new props
@@ -31,7 +32,7 @@ export default function PageCard({
               <FileText className="w-8 h-8 text-neumorphic-text" />
             </div>
           )}
-          <h3 className=" px-2 font-semibold text-neumorphic text-lg mb-2 truncate">
+          <h3 className=" px-2 font-semibold text-[#5c5c5b] text-lg mb-2 truncate">
             {page.title}
           </h3>
           {page.description && (
@@ -43,14 +44,14 @@ export default function PageCard({
       </Link>
 
       {/* 3. Add the edit button next to the delete button */}
-      {isOwner && (
-        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+      {isOwner && editModeOn && (
+        <div className="absolute top-4 right-4 flex gap-1 opacity-70 group-hover:opacity-100 transition-all duration-200">
           <button
             onClick={(e) => {
               e.preventDefault();
               onEdit();
             }}
-            className="p-2 rounded-lg bg-neumorphic-bg shadow-neumorphic hover:shadow-neumorphic-pressed"
+            className="p-2 rounded-lg bg-[#f0efee] shadow-md hover:shadow-neumorphic-pressed"
           >
             <Edit3 className="w-4 h-4 text-neumorphic-text" />
           </button>
@@ -59,7 +60,7 @@ export default function PageCard({
               e.preventDefault();
               onDelete();
             }}
-            className="p-2 rounded-lg bg-neumorphic-bg shadow-neumorphic hover:shadow-neumorphic-pressed"
+            className="p-2 rounded-lg bg-[#f0efee] shadow-md hover:shadow-neumorphic-pressed"
           >
             <Trash2 className="w-4 h-4 text-red-500" />
           </button>

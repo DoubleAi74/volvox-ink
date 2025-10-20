@@ -43,6 +43,7 @@ export default function PostCard({
   onEdit,
   onDelete,
   isOwner,
+  editModeOn,
   username,
   pageSlug,
 }) {
@@ -69,16 +70,16 @@ export default function PostCard({
         <div className="p-2 rounded-lg bg-[#f7f3ed]  shadow-md hover:shadow-neumorphic-soft transition-all duration-300 cursor-pointer h-full flex flex-col">
           {pageSlug === "meditations" &&
           !(typeof post.thumbnail === "string") ? (
-            <div className="w-full aspect-[16/9] mb-4 rounded-md overflow-hidden">
+            <div className="w-full aspect-[16/9] mb-2 rounded-md overflow-hidden">
               <RandomizedImage
                 imageSrc="/logo-lotus4.png"
                 params={post.thumbnail}
                 width={800}
-                imgProps={{ className: "rounded-lg shadow-md" }}
+                imgProps={{ className: "rounded-md shadow-md" }}
               />
             </div>
           ) : post.thumbnail ? (
-            <div className="w-full aspect-[16/9] mb-4 rounded-md overflow-hidden">
+            <div className="w-full aspect-[16/9] mb-2 rounded-md overflow-hidden">
               <img
                 src={post.thumbnail}
                 alt={post.title}
@@ -86,42 +87,39 @@ export default function PostCard({
               />
             </div>
           ) : (
-            <div className="w-full aspect-[16/9] mb-4 rounded-md shadow-md bg-neumorphic-bg flex items-center justify-center flex items-center justify-center">
+            <div className="w-full aspect-[16/9] mb-2 rounded-md shadow-md bg-neumorphic-bg flex items-center justify-center flex items-center justify-center">
               <ContentIcon className="w-8 h-8 text-neumorphic-text" />
             </div>
           )}
 
-          <div className="px-4 pb-4 pt-1">
+          <div className="px-4 pb-2 pt-1">
             <div className="flex-grow">
-              <h3 className="font-semibold text-neumorphic text-lg mb-2 truncate">
+              <h3 className="font-semibold text-[#71716f] text-lg lg:text-lg text-left xl:text-sm mb-2 truncate">
                 {post.title}
               </h3>
               {post.description && (
-                <p className="text-sm text-neumorphic-text mb-3 line-clamp-2">
-                  {post.description}
-                </p>
+                <div className="flex items-center">
+                  <p className="text-sm text-neumorphic-text  w-2/3 line-clamp-1">
+                    {post.description}
+                  </p>
+                  <span className="w-1/3  text-xs text-neumorphic-text text-right translate-y-[1px] line-clamp-1">
+                    {format(new Date(post.created_date), "MMM d, yyyy")}
+                  </span>
+                </div>
               )}
-            </div>
-
-            <div className="flex items-center justify-between text-xs text-neumorphic-text mt-2">
-              <div className="flex items-center gap-1">
-                <ContentIcon className="w-3 h-3" />
-                <span className="capitalize">{post.content_type}</span>
-              </div>
-              <span>{format(new Date(post.created_date), "MMM d, yyyy")}</span>
             </div>
           </div>
         </div>
       </PostContentWrapper>
 
-      {isOwner && (
-        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+      {isOwner && editModeOn && (
+        <div className="absolute top-3 right-3 flex gap-1 opacity-70 group-hover:opacity-100 transition-all duration-200">
           <button
             onClick={(e) => {
               e.preventDefault();
               onEdit();
             }}
-            className="p-2 rounded-lg bg-neumorphic-bg shadow-neumorphic hover:shadow-neumorphic-pressed"
+            className="p-2 rounded-lg bg-[#f0efee] shadow-md hover:shadow-neumorphic-pressed"
           >
             <Edit3 className="w-4 h-4 text-neumorphic-text" />
           </button>
@@ -130,7 +128,7 @@ export default function PostCard({
               e.preventDefault();
               onDelete();
             }}
-            className="p-2 rounded-lg bg-neumorphic-bg shadow-neumorphic hover:shadow-neumorphic-pressed"
+            className="p-2 rounded-lg bg-[#f0efee] shadow-md hover:shadow-neumorphic-pressed"
           >
             <Trash2 className="w-4 h-4 text-red-500" />
           </button>

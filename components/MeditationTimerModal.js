@@ -236,15 +236,15 @@ export default function MeditationTimerModal({
     const hour = now.getHours(); // 0–23
 
     if (hour >= 5 && hour < 8) {
-      return " minutes - early morning";
+      return " - early morning";
     } else if (hour >= 8 && hour < 12) {
-      return " minutes - morning";
+      return " - morning";
     } else if (hour >= 12 && hour < 17) {
-      return " minutes - afternoon";
+      return " - afternoon";
     } else if (hour >= 17 && hour < 21) {
-      return " minutes - evening";
+      return " - evening";
     } else {
-      return " minutes - night";
+      return " - night";
     }
   }
 
@@ -260,7 +260,12 @@ export default function MeditationTimerModal({
     const seconds = totalSeconds % 60;
 
     // Format as "m:ss" (e.g. "5:03")
-    const formattedTime = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    const roundMinutes = Math.max(1, Math.floor(totalSeconds / 60));
+    const formattedTime = `${roundMinutes} ${
+      roundMinutes === 1 ? "minute" : "minutes"
+    }`;
+
+    //const formattedTime = `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
     setFormData((prev) => ({
       ...prev,

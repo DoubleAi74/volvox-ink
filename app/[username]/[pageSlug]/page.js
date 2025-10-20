@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { Plus, ArrowLeft } from "lucide-react";
+import { Plus, LogOut, ArrowLeft, User as UserIcon } from "lucide-react";
 import {
   getUserByUsername,
   getPageBySlug,
@@ -18,6 +18,8 @@ import CreatePostModal from "@/components/page/CreatePostModal";
 import EditPostModal from "@/components/page/EditPostModal";
 // <-- ADDED: Meditation timer modal (adjust path if your project stores it elsewhere)
 import MeditationTimerModal from "@/components/MeditationTimerModal";
+
+import PageInfoEditor from "@/components/page/PageInfoEditor";
 
 import RandomizedImage, {
   generateRandomParams,
@@ -35,6 +37,8 @@ export default function PageSlugView({ params }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
   const [isPublic, setPublicPage] = useState(false);
+  const [editOn, setEditOn] = useState(false);
+  const [profileUser, setProfileUser] = useState(null);
 
   // NEW: state for meditation modal
   const [showMeditationModal, setShowMeditationModal] = useState(false);
@@ -44,6 +48,15 @@ export default function PageSlugView({ params }) {
     const postData = await getPostsForPage(pageId);
     setPosts(postData);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Failed to log out:", error);
+    }
+  };
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -67,7 +80,9 @@ export default function PageSlugView({ params }) {
   useEffect(() => {
     const loadPageData = async () => {
       setLoading(true);
-      const profileUser = await getUserByUsername(username);
+
+      const profileUser = await getUserByUsername(params.username);
+      setProfileUser(profileUser); // Added this for the PageInfoEditor component
 
       if (profileUser) {
         const pageData = await getPageBySlug(profileUser.uid, pageSlug);
@@ -205,7 +220,7 @@ export default function PageSlugView({ params }) {
             {username === "the-lotus-seed" && pageSlug === "meditations" && (
               <button
                 onClick={() => setShowMeditationModal(true)}
-                className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-[#313232] shadow-md bg-[#aad8d3] text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed"
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-[#313232] shadow-md bg-[#aad8d3] text-neumorphic-text font-medium   shadow-md border-2 border-[#80a4a0]/30 hover:border-[#58817c] bg-[#aad8d3] text-[#545656] active:shadow-neumorphic-pressed"
                 aria-label="Meditate now"
               >
                 Meditate now
@@ -221,6 +236,10 @@ export default function PageSlugView({ params }) {
               </button>
             )}
           </div>
+        </div>
+
+        <div className="w-4/5">
+          <PageInfoEditor pid={page?.id} canEdit={isOwner} editOn={editOn} />
         </div>
 
         {posts.length === 0 ? (
@@ -247,13 +266,13 @@ export default function PageSlugView({ params }) {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {[...posts].reverse().map((post) => (
               <PostCard
                 key={post.id}
                 post={post}
                 isOwner={isOwner}
-                // ADD THESE TWO LINES BACK
+                editModeOn={editOn}
                 username={params.username}
                 pageSlug={params.pageSlug}
                 //
@@ -263,7 +282,6 @@ export default function PageSlugView({ params }) {
             ))}
           </div>
         )}
-
         {isOwner ? (
           <>
             <CreatePostModal
@@ -294,7 +312,43 @@ export default function PageSlugView({ params }) {
         ) : (
           <></>
         )}
+        {isOwner && (
+          <div className="hidden md:flex items-center gap-4 mt-4 fixed bottom-6 right-8 z-[100]">
+            {/* Toggle edit mode */}
 
+            {editOn ? (
+              <button
+                onClick={() => setEditOn(!editOn)}
+                className="flex  text-sm items-center gap-2 px-4 py-2 rounded-xl bg-[#0e4f19] shadow-md text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed h-[44px]" // same height across all
+              >
+                <div className="text-white">Edit: on</div>
+              </button>
+            ) : (
+              <button
+                onClick={() => setEditOn(!editOn)}
+                className="flex text-sm items-center gap-2 px-4 py-2 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed h-[44px]" // same height across all
+              >
+                <div>Edit: off</div>
+              </button>
+            )}
+
+            {/* User Info + Logout */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 px-6 py-2 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text h-[44px]">
+                <UserIcon className="w-5 h-5" />
+                <span className="text-sm">{currentUser.email}</span>
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="flex items-center justify-center px-6 py-2 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed h-[44px]"
+                title="Log Out"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
         {/* NEW: Meditation timer modal. It will close when the modal calls onClose (e.g. X) */}
         <MeditationTimerModal
           isOpen={showMeditationModal}

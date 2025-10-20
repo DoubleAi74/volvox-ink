@@ -30,6 +30,8 @@ export default function UserDashboard({ params }) {
   const [showMeditationModal, setShowMeditationModal] = useState(false);
   const router = useRouter();
 
+  const [editOn, setEditOn] = useState(false);
+
   const isOwner =
     currentUser && profileUser && currentUser.uid === profileUser.uid;
 
@@ -152,6 +154,9 @@ export default function UserDashboard({ params }) {
           title={`${params.username}`}
           defaultHex="#00502F"
           alpha={1}
+          specPage={params.username}
+          uid={profileUser?.uid}
+          editModeOn={editOn}
         />
         <div className="p-16 text-center text-xl text-neumorphic">
           Looking for {params.username + "'s"} page.
@@ -162,7 +167,14 @@ export default function UserDashboard({ params }) {
 
   return (
     <div className="p-6">
-      <DashHeader title={`${params.username}`} defaultHex="#00502F" alpha={1} />
+      <DashHeader
+        title={`${params.username}`}
+        defaultHex="#00502F"
+        alpha={1}
+        specPage={params.username}
+        uid={profileUser?.uid}
+        editModeOn={editOn}
+      />
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -172,7 +184,7 @@ export default function UserDashboard({ params }) {
           </div>
 
           {isOwner && (
-            <div className="flex items-center gap-4 mt-4 fixed bottom-6 right-8">
+            <div className="hidden md:flex items-center gap-4 mt-4 fixed bottom-6 right-8 z-[100]">
               {/* New Page Button */}
               <button
                 onClick={() => setShowCreateModal(true)}
@@ -181,6 +193,24 @@ export default function UserDashboard({ params }) {
                 <Plus className="w-5 h-5" />
                 New Page
               </button>
+
+              {/* Toggle edit mode */}
+
+              {editOn ? (
+                <button
+                  onClick={() => setEditOn(!editOn)}
+                  className="flex  text-sm items-center gap-2 px-4 py-2 rounded-xl bg-[#0e4f19] shadow-md text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed h-[44px]" // same height across all
+                >
+                  <div className="text-white">Edit: on</div>
+                </button>
+              ) : (
+                <button
+                  onClick={() => setEditOn(!editOn)}
+                  className="flex text-sm items-center gap-2 px-4 py-2 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed h-[44px]" // same height across all
+                >
+                  <div>Edit: off</div>
+                </button>
+              )}
 
               {/* User Info + Logout */}
               <div className="flex items-center gap-4">
@@ -201,7 +231,28 @@ export default function UserDashboard({ params }) {
           )}
         </div>
 
-        <DashboardInfoEditor uid={currentUser?.uid} />
+        <div className="flex">
+          <div className=" md:w-4/5">
+            <DashboardInfoEditor
+              uid={profileUser?.uid}
+              canEdit={isOwner}
+              editOn={editOn}
+            />
+          </div>
+          <div className=" hidden md:block w-1/5 justify-center ">
+            <button
+              onClick={() =>
+                router.push("./the-lotus-seed/meditations?meditate=1")
+              }
+              aria-label="Meditate now"
+              className="  z-50 flex items-center gap-3 mb-6 ml-10  px-7 py-5 h-[65px] rounded-xl shadow-md border-2 border-[#80a4a0]/30 hover:border-[#58817c] bg-[#aad8d3] text-[#545656] font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
+            >
+              {/* optional icon */}
+              {/* <Plus className="w-4 h-4" /> */}
+              Meditate now
+            </button>
+          </div>
+        </div>
 
         {pages.length === 0 ? (
           <div className="text-center py-16">
@@ -221,6 +272,7 @@ export default function UserDashboard({ params }) {
                 key={page.id}
                 page={page}
                 isOwner={isOwner}
+                editModeOn={editOn}
                 username={params.username}
                 onDelete={() => handleDeletePage(page.id)}
                 onEdit={() => setEditingPage(page)}
@@ -247,7 +299,7 @@ export default function UserDashboard({ params }) {
       <button
         onClick={() => router.push("./the-lotus-seed/meditations?meditate=1")}
         aria-label="Meditate now"
-        className="fixed bottom-6 left-6 z-50 flex items-center gap-3 mb-6 ml-6  px-7 py-5 rounded-xl shadow-md bg-[#aad8d3] text-313232 font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
+        className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 mb-6  px-7 py-5 rounded-xl shadow-md border-2 border-[#80a4a0]/30 hover:border-[#58817c] bg-[#aad8d3] text-[#545656] font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
       >
         {/* optional icon */}
         {/* <Plus className="w-4 h-4" /> */}

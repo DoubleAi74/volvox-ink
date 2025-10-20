@@ -1,18 +1,14 @@
 // components/dashboard/DashboardInfoEditor.jsx
 import React, { useEffect, useState, useRef } from "react";
-import {
-  fetchUserDashboard,
-  listenUserDashboard,
-  saveUserDashboard,
-} from "@/lib/data"; // adjust path to match your project
+import { fetchUserPage, listenUserPage, saveUserPage } from "@/lib/data"; // adjust path to match your project
 
 /**
  * Props:
  *  - uid: string | null  -> the target user's uid whose dashboard info we should show
  *  - canEdit: boolean    -> whether to show editor UI (defaults to false)
  */
-export default function DashboardInfoEditor({
-  uid,
+export default function PageInfoEditor({
+  pid,
   canEdit = false,
   editOn = true,
 }) {
@@ -28,7 +24,7 @@ export default function DashboardInfoEditor({
     let unsub;
 
     async function init() {
-      if (!uid) {
+      if (!pid) {
         setText("");
         setServerText("");
         setLoading(false);
@@ -39,7 +35,7 @@ export default function DashboardInfoEditor({
 
       try {
         // 1) prefetch once for snappy load
-        const initialData = await fetchUserDashboard(uid);
+        const initialData = await fetchUserPage(pid);
         if (initialData) {
           const info = initialData.infoText ?? "";
           setText(info);
@@ -50,7 +46,7 @@ export default function DashboardInfoEditor({
         }
 
         // 2) then subscribe for live updates
-        unsub = listenUserDashboard(uid, (data) => {
+        unsub = listenUserPage(pid, (data) => {
           const remote = data?.infoText ?? "";
           setServerText(remote);
           // don't clobber local edits: only overwrite if the previous local value matched last-known serverText.
@@ -70,28 +66,28 @@ export default function DashboardInfoEditor({
       if (unsub) unsub();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uid]);
+  }, [pid]);
 
   // autosave when editable
   useEffect(() => {
-    if (!uid || !canEdit) return;
+    if (!pid || !canEdit) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
       handleSave();
     }, 1500);
     return () => clearTimeout(saveTimer.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [text, uid, canEdit]);
+  }, [text, pid, canEdit]);
 
   async function handleSave() {
-    if (!uid || !canEdit) return;
+    if (!pid || !canEdit) return;
     if (text === serverText) return;
     setSaving(true);
     setError(null);
     try {
       // we pass editor uid as null here — server rules will enforce auth; if you want to pass editor id,
       // call saveUserDashboard(uid, text, currentUser.uid) from the caller or grab auth here.
-      await saveUserDashboard(uid, text, null);
+      await saveUserPage(pid, text, null);
       setServerText(text);
     } catch (err) {
       console.error("Failed to save dashboard info:", err);
@@ -103,7 +99,7 @@ export default function DashboardInfoEditor({
 
   // Render
   return (
-    <section className="mb-6 mt-[-15px] ml-2">
+    <section className="mb-6 mt-[-10px] ml-2">
       {loading ? (
         <div className="text-sm text-muted">Loading…</div>
       ) : canEdit ? (
@@ -112,7 +108,7 @@ export default function DashboardInfoEditor({
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
-              rows={5}
+              rows={4}
               className="w-full p-3 border rounded-md resize-none "
               placeholder="Write something for your dashboard..."
             />
@@ -133,7 +129,7 @@ export default function DashboardInfoEditor({
           <div className="prose max-w-none relative">
             {serverText ? (
               <div
-                className="bg-[#f7efe4] p-3  rounded-md shadow-sm text-[#474747]"
+                className="bg-[#f7efe4] p-3 rounded-md shadow-sm text-[#474747]"
                 dangerouslySetInnerHTML={{ __html: serverText }}
               />
             ) : (
@@ -152,7 +148,7 @@ export default function DashboardInfoEditor({
               dangerouslySetInnerHTML={{ __html: serverText }}
             />
           ) : (
-            <div className="text-sm bg-[#f7efe4] text-neutral-500">Welcome</div>
+            <div className="text-sm text-neutral-500">Welcome</div>
           )}
         </div>
       )}
