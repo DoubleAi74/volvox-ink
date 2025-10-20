@@ -115,6 +115,10 @@ export default function LoginPage() {
           </button>
         </div>
       </div>
+      <div className=" text-center gap-2 fixed bottom-8 right-8 bg-[#601010] rounded-lg text-white p-3">
+        <p className="text-sm">Email me if you want a custom page:</p>
+        <b>adam74aldridge@gmail.com</b>
+      </div>
     </div>
   );
 }

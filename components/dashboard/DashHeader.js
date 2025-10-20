@@ -11,9 +11,9 @@ export default function DashHeader({
   specPage,
   uid,
   editModeOn = false,
+  openColor,
 }) {
   const [hex, setHex] = useState(null);
-  const openColor = true;
 
   const findHex = async (uid, saved) => {
     // Fetch the global hex from the server or database
