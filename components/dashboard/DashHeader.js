@@ -13,6 +13,7 @@ export default function DashHeader({
   editModeOn = false,
 }) {
   const [hex, setHex] = useState(defaultHex);
+  const openColor = true;
 
   const findHex = async (uid, saved) => {
     // Fetch the global hex from the server or database
@@ -63,7 +64,7 @@ export default function DashHeader({
       className="!sticky inset-x-0 top-1 z-50 backdrop-blur-md rounded-md "
       style={{ position: "fixed", backgroundColor: hexToRgba(hex, alpha) }}
     >
-      {editModeOn && (
+      {(editModeOn || openColor) && (
         <input
           type="color"
           className="mr-3 h-9 w-9 cursor-pointer absolute right-6 top-7 rounded-md border border-white/50 bg-transparent p-1 shadow"

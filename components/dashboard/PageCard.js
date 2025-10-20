@@ -18,7 +18,7 @@ export default function PageCard({
     <div className="group relative">
       <Link href={`/${username}/${page.slug}`}>
         {/* ... (The inner content of the link is unchanged) ... */}
-        <div className="p-2 rounded-lg bg-[#f7f3ed] shadow-md hover:shadow-neumorphic-soft transition-all duration-300 cursor-pointer">
+        <div className="p-2 rounded-lg bg-[#f7f3ed] shadow-md hover:shadow-neumorphic-soft transition-all duration-300  h-full mb-[-10px] cursor-pointer">
           {page.thumbnail ? (
             <div className="w-full aspect-[4/3] mb-4 rounded-md overflow-hidden ">
               <img
