@@ -12,7 +12,7 @@ export default function DashHeader({
   uid,
   editModeOn = false,
 }) {
-  const [hex, setHex] = useState(defaultHex);
+  const [hex, setHex] = useState(null);
   const openColor = true;
 
   const findHex = async (uid, saved) => {
@@ -62,12 +62,17 @@ export default function DashHeader({
     <div
       role="banner"
       className="!sticky inset-x-0 top-1 z-50 backdrop-blur-md rounded-md "
-      style={{ position: "fixed", backgroundColor: hexToRgba(hex, alpha) }}
+      style={{
+        position: "fixed",
+        backgroundColor: hex
+          ? hexToRgba(hex, alpha)
+          : hexToRgba("#000000", 0.2),
+      }}
     >
       {(editModeOn || openColor) && (
         <input
           type="color"
-          className="mr-3 h-9 w-9 cursor-pointer absolute right-6 top-7 rounded-md border border-white/50 bg-transparent p-1 shadow"
+          className="mr-3 h-9 w-9 hidden md:block cursor-pointer absolute right-6 top-7 rounded-md border border-white/50 bg-transparent p-1 shadow"
           value={hex}
           onChange={(e) => setHexGlobal(e.target.value)}
         />
@@ -75,7 +80,11 @@ export default function DashHeader({
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8  ">
         <div
           className="flex h-[115px] items-center justify-between gap-4 border-b"
-          style={{ borderColor: hex }}
+          style={{
+            borderColor: hex
+              ? hexToRgba(hex, alpha)
+              : hexToRgba("#000000", 0.2),
+          }}
         >
           <div className="flex items-center gap-6 min-w-0">
             {specPage === "the-lotus-seed" && (
