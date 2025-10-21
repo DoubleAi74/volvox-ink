@@ -343,7 +343,7 @@ export default function UserDashboard({ params }) {
           className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 mb-6  px-7 py-5 rounded-xl shadow-md border-2 border-[#80a4a0]/30 hover:border-[#58817c] bg-[#aad8d3] text-[#545656] font-medium hover:shadow-neumorphic-hover active:shadow-neumorphic-pressed"
         >
           {/* optional icon */}
-          {/* <Plus className="w-4 h-4" /> */}
+          {/* <Plus classNa gme="w-4 h-4" /> */}
           Meditate now
         </button>
       )}
