@@ -6,8 +6,8 @@ import Header from "@/components/Header"; // 1. Import the Header
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Ink",
-  description: "A Next.js personal dashboard application.",
+  title: "The Lotus Seed",
+  description: "Built with Volvox",
 };
 
 export default function RootLayout({ children }) {
