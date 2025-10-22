@@ -116,12 +116,14 @@ export default function DashHeader({
                   The University of Leeds <br />
                   Meditation Society
                 </label>
-                <Image
-                  src="/Leeds-logo.png" // <- file in public/
-                  alt="Leeds Uni Clocktower"
-                  width={60}
-                  height={60}
-                />
+                <div className="hidden sm:block">
+                  <Image
+                    src="/Leeds-logo.png" // <- file in public/
+                    alt="Leeds Uni Clocktower"
+                    width={60}
+                    height={60}
+                  />
+                </div>
               </>
             )}
           </div>
