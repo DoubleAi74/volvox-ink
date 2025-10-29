@@ -212,6 +212,7 @@ export default function UserDashboard({ params }) {
                   className="flex text-sm items-center gap-2 px-4 py-2 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text font-medium hover:shadow-neumorphic-soft active:shadow-neumorphic-pressed h-[44px]" // same height across all
                 >
                   <div>Edit: off</div>
+                  <> </>
                 </button>
               )}
 
@@ -260,7 +261,7 @@ export default function UserDashboard({ params }) {
                   className="flex text-sm font-medium items-center gap-2 hover:shadow-neumorphic-soft px-6 py-2 rounded-xl bg-[#f7f3ed] shadow-md text-neumorphic-text h-[44px]"
                 >
                   <UserIcon className="w-5 h-5" />
-                  <span className="text-sm">Create your own volvox page</span>
+                  <span className="text-sm">Create your own volvox page </span>
                 </button>
               </div>
             </div>

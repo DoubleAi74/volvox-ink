@@ -110,7 +110,7 @@ export default function LoginPage() {
             className="text-sm text-neumorphic-text hover:underline"
           >
             {isSigningUp
-              ? "Already have an account? Log In"
+              ? "Already have an account? Log In "
               : "Don't have an account? Sign Up"}
           </button>
         </div>

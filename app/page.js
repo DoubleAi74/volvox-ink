@@ -30,7 +30,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-neumorphic-bg flex items-center justify-center text-center p-4">
       <div className="p-10 rounded-2xl bg-neumorphic-bg shadow-neumorphic">
         <h1 className="text-4xl font-bold text-neumorphic mb-4">
-          Welcome to Your Public Dashboard
+          Welcome to Your Public Dashboards
         </h1>
         <p className="text-neumorphic-text mb-8">
           Create and share your own pages with the world.

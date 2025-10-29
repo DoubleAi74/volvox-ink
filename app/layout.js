@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "The Lotus Seed",
-  description: "Built with Volvox",
+  description: "Built with Volvox ",
 };
 
 export default function RootLayout({ children }) {
